@@ -5,10 +5,9 @@ import matplotlib.pyplot as plt
 
 ### Constants ###
 g = -9.8  # m/s^2
-m = 0.150  # Kg
-μ = 0.003
+μ = 0.010
 TIME_STEP = 0.00001
-INIT_VEL = [4, 3]
+INIT_VEL = [5, 5]
 INIT_POS = [0, 0]
 #################
 class vector:
@@ -38,9 +37,9 @@ class object:
 
     def force(self):
         if self.friction:
-            return self.drag() + vector(0, m * g)
+            return self.drag() + vector(0, g)
         else:
-            return vector(0, m * g)
+            return vector(0, g)
 
     def drag(self):
         drag_mag = μ * (self.vel.mag**2)
@@ -49,7 +48,7 @@ class object:
         return vector(drag_x, drag_y)
 
     def accel(self):
-        return self.force() / m
+        return self.force()
 
     def move(self, time):
         self.pos += self.vel * time
@@ -85,5 +84,5 @@ xpos, ypos, xpos1, ypos1 = get_points(INIT_VEL, INIT_POS)
 
 plt.xlabel("x -->")
 plt.ylabel("y -->")
-plt.plot(xpos, ypos, ",-k", xpos1, ypos1, ",--k")
+plt.plot(xpos, ypos, ",-k", xpos1, ypos1, ",:k")
 plt.show()
