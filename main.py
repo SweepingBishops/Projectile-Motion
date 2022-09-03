@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 ### Constants ###
 g = -9.8  # m/s^2
 μ = 0.010
-TIME_STEP = 0.001
-# INIT_VEL = [5, 5]
-INIT_VEL = 5
+TIME_STEP = 0.00001
+INIT_VEL = [5, 5]
 INIT_POS = [0, 0]
 #################
 class vector:
@@ -56,24 +55,17 @@ class object:
         self.vel += self.accel() * time
 
 
-def get_points(init_vel_mag, init_pos=[0, 0]):
-    total_xpos = dict()
-    θ = 0
-    while θ <= 1.57: 
-        init_vel = [init_vel_mag*math.cos(θ), init_vel_mag*math.sin(θ)]
-        ball = object(init_vel, init_pos)
-        xpos = []
-        ypos = []
+def get_points(init_vel, init_pos=[0, 0]):
+    ball = object(init_vel, init_pos)
+    xpos = []
+    ypos = []
+    xpos.append(ball.pos.x)
+    ypos.append(ball.pos.y)
+    ball.move(TIME_STEP)
+    while ball.pos.y >= 0:
         xpos.append(ball.pos.x)
         ypos.append(ball.pos.y)
         ball.move(TIME_STEP)
-        while ball.pos.y >= 0:
-            xpos.append(ball.pos.x)
-            ypos.append(ball.pos.y)
-            ball.move(TIME_STEP)
-        θ += 0.0001
-        total_xpos[ball.pos.x] = θ
-    print(math.degrees(total_xpos[max(total_xpos.keys())]))
 
     ball1 = object(init_vel, init_pos, friction=False)
     xpos1 = []
