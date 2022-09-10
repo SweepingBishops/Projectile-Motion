@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 ### Constants ###
 g = -9.8  # m/s^2
-μ = 0.010
-TIME_STEP = 0.00001
-INIT_VEL = [5, 5]
+μ = 0.5
+TIME_STEP = 0.001
+INIT_VEL = 5
 INIT_POS = [0, 0]
 #################
 class vector:
@@ -55,8 +55,12 @@ class object:
         self.vel += self.accel() * time
 
 
-def get_points(init_vel, init_pos=[0, 0]):
-    ball = object(init_vel, init_pos)
+INIT_VEL_45 = INIT_VEL / 2**0.5
+
+
+def get_points_frictionless_45():
+    init_vel = [INIT_VEL_45, INIT_VEL_45]
+    ball = object(init_vel, INIT_POS, friction=False)
     xpos = []
     ypos = []
     xpos.append(ball.pos.x)
@@ -66,23 +70,68 @@ def get_points(init_vel, init_pos=[0, 0]):
         xpos.append(ball.pos.x)
         ypos.append(ball.pos.y)
         ball.move(TIME_STEP)
-
-    ball1 = object(init_vel, init_pos, friction=False)
-    xpos1 = []
-    ypos1 = []
-    xpos1.append(ball1.pos.x)
-    ypos1.append(ball1.pos.y)
-    ball1.move(TIME_STEP)
-    while ball1.pos.y >= 0:
-        xpos1.append(ball1.pos.x)
-        ypos1.append(ball1.pos.y)
-        ball1.move(TIME_STEP)
-    return xpos, ypos, xpos1, ypos1
+    return xpos, ypos
 
 
-xpos, ypos, xpos1, ypos1 = get_points(INIT_VEL, INIT_POS)
+def get_points_friction_45():
+    init_vel = [INIT_VEL_45, INIT_VEL_45]
+    ball = object(init_vel, INIT_POS)
+    xpos = []
+    ypos = []
+    xpos.append(ball.pos.x)
+    ypos.append(ball.pos.y)
+    ball.move(TIME_STEP)
+    while ball.pos.y >= 0:
+        xpos.append(ball.pos.x)
+        ypos.append(ball.pos.y)
+        ball.move(TIME_STEP)
+    return xpos, ypos
+
+
+def get_points_friction_max():
+    θ = 0
+    max_range = [0, θ]
+    while θ < math.pi / 2:
+        init_vel = [INIT_VEL * math.cos(θ), INIT_VEL * math.sin(θ)]
+        ball = object(init_vel, INIT_POS)
+        ball.move(TIME_STEP)
+        while ball.pos.y >= 0:
+            ball.move(TIME_STEP)
+        if ball.pos.x > max_range[0]:
+            max_range[0] = ball.pos.x
+            max_range[1] = θ
+        θ += 0.001
+
+    init_vel = [INIT_VEL * math.cos(max_range[1]), INIT_VEL * math.sin(max_range[1])]
+    ball = object(init_vel, INIT_POS)
+    xpos = []
+    ypos = []
+    while ball.pos.y >= 0:
+        xpos.append(ball.pos.x)
+        ypos.append(ball.pos.y)
+        ball.move(TIME_STEP)
+    return xpos, ypos, max_range[1]
+
+
+xpos_wf, ypos_wf = get_points_frictionless_45()
+xpos_45, ypos_45 = get_points_friction_45()
+xpos, ypos, θ = get_points_friction_max()
+print(f"The largest range is acheived at angle: {math.degrees(θ)} degrees")
 
 plt.xlabel("x -->")
 plt.ylabel("y -->")
-plt.plot(xpos, ypos, ",-k", xpos1, ypos1, ",:k")
+plt.plot(
+    xpos,
+    ypos,
+    ",-g",
+    xpos_45,
+    ypos_45,
+    ",--r",
+    xpos_wf,
+    ypos_wf,
+    ",:b",
+    [0, xpos_wf[-1]],
+    [0, 0],
+    ",--k",
+)
 plt.show()
