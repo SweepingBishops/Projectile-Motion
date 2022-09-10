@@ -116,7 +116,7 @@ def get_points_friction_max():
 xpos_wf, ypos_wf = get_points_frictionless_45()
 xpos_45, ypos_45 = get_points_friction_45()
 xpos, ypos, θ = get_points_friction_max()
-print(f"The largest range is acheived at angle: {math.degrees(θ)} degrees")
+print(f"The largest range is achieved at angle: {math.degrees(θ)} degrees")
 
 plt.xlabel("x -->")
 plt.ylabel("y -->")
