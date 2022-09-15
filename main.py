@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 ### Constants ###
 g = -9.8  # m/s^2
-μ = 0.015
+μ = 0.5
 TIME_STEP = 0.001
-INIT_VEL = 35
+INIT_VEL = 10
 INIT_POS = [0, 0]
 #################
 class vector:
